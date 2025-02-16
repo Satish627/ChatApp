@@ -1,4 +1,3 @@
-import { Stethoscope } from "lucide-react"
 import {create} from "zustand"
 
 export const useThemeStore = create((set=>({
