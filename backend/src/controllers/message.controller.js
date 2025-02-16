@@ -59,7 +59,7 @@ export const sendMessage = async (req,res)=>{
         await newMessage.save()
 
         //todo: relatime functionality goes here --> socket.io
-        res.status(201).json(messages)
+        res.status(201).json(newMessage)
 
     }
     catch(error){
