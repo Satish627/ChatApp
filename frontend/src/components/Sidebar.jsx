@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useChatStore } from '../store/useChatStore'
 import SidebarSkeleton from './skeletons/SidebarSkeleton';
-import { Users } from 'lucide-react';
+import { Search, Users } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 
 const Sidebar = () => {
@@ -12,13 +12,24 @@ const Sidebar = () => {
 
     const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
+    const [searchUser, setSearchUser] = useState("");
 
     useEffect(() => {
         getUsers()
     }, [getUsers])
 
-    const filteredUsers = showOnlineOnly ?
-        users.filter(user => onlineUsers.includes(user._id)) : users;
+
+    const filteredUsers = showOnlineOnly
+    ? users.filter((user) => onlineUsers.includes(user._id))
+    : users;
+
+// Check if search term exists before filtering
+const filteredAndSearchedUsers = filteredUsers.filter((user) =>
+    user.fullName && user.fullName.toLowerCase().includes(searchUser?.toLowerCase() || "")
+);
+
+
+
 
     if (isUserLoading) return <SidebarSkeleton />
 
@@ -29,6 +40,19 @@ const Sidebar = () => {
                     <Users className='size-6' />
                     <span className='font-medium hidden lg:block'>Contacts</span>
                 </div>
+
+                {/* Search Bar */}
+                <div className="mt-3 relative hidden lg:block">
+                    <input
+                        type="text"
+                        placeholder="Search user..."
+                        value={searchUser}
+                        onChange={(e) => setSearchUser(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md text-sm bg-base-100 focus:ring-2 focus:ring-primary focus:outline-none"
+                    />
+                    <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 size-4 text-zinc-500" />
+                </div>
+                {/* Online filter only */}
                 <div className="mt-3 hidden lg:flex items-center gap-2">
                     <label className="cursor-pointer flex items-center gap-2">
                         <input
@@ -44,7 +68,7 @@ const Sidebar = () => {
             </div>
             <div className='overflow-y-auto w-full py-3'>
                 {
-                    filteredUsers.map((user) => (
+                    filteredAndSearchedUsers.map((user) => (
                         <button
                             key={user._id}
                             onClick={() => setSelectedUser(user)}
@@ -73,7 +97,7 @@ const Sidebar = () => {
                         </button>
                     ))
                 }
-                {filteredUsers.length === 0 &&(
+                {filteredUsers.length === 0 && (
                     <div className='text-center text-zinc-500 py-4'>No online users</div>
 
                 )}
