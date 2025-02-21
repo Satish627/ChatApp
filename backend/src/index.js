@@ -4,6 +4,7 @@ import {connectDB} from "./lib/db.js"
 import cookieParser from "cookie-parser"
 import authRoutes from "./routes/auth.route.js"
 import messageRoutes from "./routes/message.route.js"
+import reactionRoutes from "./routes/reaction.route.js"
 import cors from "cors"
 import {app, server} from "./lib/socket.js"
 import path from "path";
@@ -22,6 +23,8 @@ app.use(cors({
 
 app.use("/api/auth", authRoutes)
 app.use("/api/messages", messageRoutes)
+app.use("/api/reactions", reactionRoutes)
+
 
 if(process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(_dirname, "../frontend/dist")))
